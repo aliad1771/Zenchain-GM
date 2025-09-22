@@ -35,12 +35,41 @@ const CONTRACT_ABI = [
 
 let provider, signer, contract, currentAccount = null, cooldownTimer = null;
 
+// --------------------- ADD ZENCHAIN NETWORK ---------------------
+async function addZenChainNetwork() {
+  if (!window.ethereum) return;
+
+  try {
+    await window.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [{
+        chainId: '0x2098', // 8408 in hex
+        chainName: 'ZenChain Testnet',
+        rpcUrls: ['https://zenchain-testnet.api.onfinality.io/public'],
+        nativeCurrency: {
+          name: 'ZenChain Token',
+          symbol: 'ZTC',
+          decimals: 18
+        },
+        blockExplorerUrls: ['https://zenchain-explorer.io']
+      }]
+    });
+    console.log("ZenChain Testnet added to MetaMask");
+  } catch (err) {
+    console.error("Error adding network:", err);
+    alert("Failed to add ZenChain network in MetaMask");
+  }
+}
+
 // --------------------- CONNECT WALLET ---------------------
 document.getElementById("connectButton").addEventListener("click", async () => {
-  if (typeof window.ethereum === "undefined") {
+  if (!window.ethereum) {
     alert("MetaMask not found! Please install it.");
     return;
   }
+
+  // پیشنهاد اضافه کردن شبکه ZenChain
+  await addZenChainNetwork();
 
   try {
     if (!currentAccount) {
@@ -75,7 +104,7 @@ document.getElementById("gmButton").addEventListener("click", async () => {
     const tx = await contract.sendGM();
     await tx.wait();
     alert("✅ GM sent successfully!");
-    startCooldown(86400);
+    startCooldown(86400); // 24h
     refreshData();
   } catch(err) {
     console.error("Error sending GM:", err);
