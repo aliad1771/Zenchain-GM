@@ -1,50 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ZenChain GM DApp (Testnet)</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>ZenChain GM DApp</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
 </head>
 <body>
-  <main class="container">
-    <header>
-      <h1>ZenChain GM DApp</h1>
-      <p class="muted">Network: ZenChain Testnet — Chain ID: 8408 — Symbol: ZTC</p>
-    </header>
+  <h1>ZenChain GM DApp</h1>
 
-    <section class="controls">
-      <button id="connectBtn">Connect Wallet</button>
-      <button id="faucetBtn">Get Test ZTC (Faucet)</button>
-    </section>
+  <!-- Wallet Section -->
+  <div>
+    <button id="connectBtn">Connect Wallet</button>
+    <p id="walletAddress">Not connected</p>
+  </div>
 
-    <section class="card">
-      <h2>Send a GM</h2>
-      <p class="muted">One GM per address every 24 hours.</p>
-      <div class="row">
-        <button id="sendGMBtn" disabled>Send GM</button>
-        <div id="cooldownInfo" class="cooldown">—</div>
-      </div>
-      <div id="txStatus" class="status"></div>
-    </section>
+  <!-- Faucet -->
+  <div>
+    <button id="faucetBtn">Get Test ZTC</button>
+  </div>
 
-    <section class="card">
-      <h2>Stats</h2>
-      <p>Total GMs: <strong id="totalGMs">—</strong></p>
-    </section>
+  <!-- GM Actions -->
+  <div>
+    <button id="gmBtn">Send GM</button>
+    <p id="cooldownTimer"></p>
+  </div>
 
-    <section class="card">
-      <h2>Recent GMs</h2>
-      <ul id="recentList" class="list"></ul>
-    </section>
+  <!-- Stats -->
+  <div>
+    <h3>Total GMs: <span id="totalGMs">0</span></h3>
+    <h3>Recent GMs:</h3>
+    <ul id="recentGMs"></ul>
+  </div>
 
-    <footer>
-      <small>Drop-in files: index.html, style.css, script.js, contracts/GMContract.sol</small>
-    </footer>
-  </main>
-
-  <!-- Ethers.js v6 CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.9.0/dist/ethers.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
