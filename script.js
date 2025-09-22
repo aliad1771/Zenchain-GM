@@ -1,57 +1,6 @@
-// ZenChain Testnet connection parameters
-const ZENCHAIN_PARAMS = {
-    chainId: "0x20E8", // 8408 in hex
-    chainName: "ZenChain Testnet",
-    nativeCurrency: {
-        name: "ZTC",
-        symbol: "ZTC",
-        decimals: 18,
-    },
-    rpcUrls: ["https://zenchain-testnet.api.onfinality.io/public"],
-    blockExplorerUrls: ["https://scan-testnet.zenchain.io/"]
-};
-
-// Contract address
-const CONTRACT_ADDRESS = "0x08530f863E91EdB25be68407053Da6Df867B2a68";
-
-// Contract ABI
+// ✅ Replace these with your contract info
+const CONTRACT_ADDRESS = "0x08530f863e91edb25be68407053da6df867b2a68";
 const CONTRACT_ABI = [
-  {
-    "inputs": [],
-    "name": "COOLDOWN",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getRecentGMs",
-    "outputs": [{
-      "components": [
-        { "internalType": "address", "name": "sender", "type": "address" },
-        { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-      ],
-      "internalType": "struct GMContract.GM[]",
-      "name": "",
-      "type": "tuple[]"
-    }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getTotalGMs",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "user", "type": "address" }],
-    "name": "getRemainingCooldown",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
   {
     "inputs": [],
     "name": "sendGM",
@@ -60,128 +9,100 @@ const CONTRACT_ABI = [
     "type": "function"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      { "indexed": true, "internalType": "address", "name": "sender", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+    "inputs": [],
+    "name": "getTotalGMs",
+    "outputs": [{"internalType":"uint256","name":"","type":"uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRecentGMs",
+    "outputs": [
+      {
+        "components":[
+          {"internalType":"address","name":"sender","type":"address"},
+          {"internalType":"uint256","name":"timestamp","type":"uint256"}
+        ],
+        "internalType":"struct GMContract.GM[]",
+        "name":"",
+        "type":"tuple[]"
+      }
     ],
-    "name": "NewGM",
-    "type": "event"
+    "stateMutability": "view",
+    "type": "function"
   }
 ];
 
-let provider;
-let signer;
-let contract;
-let currentAccount = null;
-let cooldownInterval;
+let provider, signer, contract, userAddress;
 
-// Connect/disconnect wallet
-async function connectWallet() {
-    if (typeof window.ethereum === "undefined") {
-        alert("MetaMask not found!");
-        return;
-    }
-    try {
-        await window.ethereum.request({
-            method: "wallet_addEthereumChain",
-            params: [ZENCHAIN_PARAMS],
-        });
+// ✅ Connect Wallet
+document.getElementById("connectBtn").addEventListener("click", async () => {
+  if (typeof window.ethereum === "undefined") {
+    alert("MetaMask not detected! Please install MetaMask.");
+    return;
+  }
 
-        if (currentAccount) {
-            currentAccount = null;
-            document.getElementById("connectButton").innerText = "Connect Wallet";
-            document.getElementById("userAddress").innerText = "";
-            return;
-        }
+  provider = new ethers.providers.Web3Provider(window.ethereum);
 
-        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-        currentAccount = accounts[0];
-        provider = new ethers.providers.Web3Provider(window.ethereum);
-        signer = provider.getSigner();
-        contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+  try {
+    await provider.send("eth_requestAccounts", []);
+    signer = provider.getSigner();
+    userAddress = await signer.getAddress();
+    contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-        document.getElementById("connectButton").innerText = "Disconnect Wallet";
-        document.getElementById("userAddress").innerText = "Connected: " + currentAccount;
+    document.getElementById("walletAddress").innerText = userAddress;
+    alert("Wallet connected: " + userAddress);
 
-        loadStats();
-    } catch (err) {
-        console.error(err);
-    }
-}
+    loadStats();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to connect wallet.");
+  }
+});
 
-// Open ZenChain faucet
-function getFaucet() {
-    window.open("https://faucet.zenchain.io/", "_blank");
-}
+// ✅ Faucet Button
+document.getElementById("faucetBtn").addEventListener("click", () => {
+  window.open("https://faucet.zenchain.io/", "_blank");
+});
 
-// Send GM
-async function sendGM() {
-    try {
-        const tx = await contract.sendGM();
-        await tx.wait();
-        alert("GM sent!");
-        loadStats();
-        checkCooldown();
-    } catch (err) {
-        alert("Error: " + err.message);
-    }
-}
+// ✅ Send GM
+document.getElementById("gmBtn").addEventListener("click", async () => {
+  if (!contract) {
+    alert("Please connect wallet first.");
+    return;
+  }
 
-// Load stats: total GMs and recent GMs
+  try {
+    const tx = await contract.sendGM();
+    await tx.wait();
+    alert("GM sent successfully!");
+    loadStats();
+  } catch (err) {
+    console.error(err);
+    alert("Transaction failed.");
+  }
+});
+
+// ✅ Load stats
 async function loadStats() {
-    if (!contract) return;
+  if (!contract) return;
 
+  try {
     const total = await contract.getTotalGMs();
     document.getElementById("totalGMs").innerText = total.toString();
 
     const recents = await contract.getRecentGMs();
     const list = document.getElementById("recentGMs");
     list.innerHTML = "";
+
     recents.forEach((gm) => {
-        const li = document.createElement("li");
-        const date = new Date(gm.timestamp * 1000);
-        li.textContent = `${gm.sender} — ${date.toLocaleString()}`;
-        list.appendChild(li);
+      const li = document.createElement("li");
+      const date = new Date(gm.timestamp * 1000);
+      li.textContent = `${gm.sender} — ${date.toLocaleString()}`;
+      list.appendChild(li);
     });
-
-    checkCooldown();
+  } catch (err) {
+    console.error("Error loading stats:", err);
+  }
 }
-
-// Check cooldown
-async function checkCooldown() {
-    if (!contract || !currentAccount) return;
-    const remaining = await contract.getRemainingCooldown(currentAccount);
-    const button = document.getElementById("gmButton");
-    const timer = document.getElementById("cooldownTimer");
-
-    if (remaining.toString() === "0") {
-        button.disabled = false;
-        timer.innerText = "";
-        clearInterval(cooldownInterval);
-    } else {
-        button.disabled = true;
-        let seconds = parseInt(remaining.toString());
-        updateTimer(seconds, timer, button);
-        cooldownInterval = setInterval(() => {
-            seconds--;
-            updateTimer(seconds, timer, button);
-            if (seconds <= 0) clearInterval(cooldownInterval);
-        }, 1000);
-    }
-}
-
-function updateTimer(seconds, timer, button) {
-    if (seconds <= 0) {
-        timer.innerText = "";
-        button.disabled = false;
-    } else {
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
-        const s = seconds % 60;
-        timer.innerText = `Cooldown: ${h}h ${m}m ${s}s`;
-    }
-}
-
-// Auto refresh stats every 15 seconds
-setInterval(loadStats, 15000);
