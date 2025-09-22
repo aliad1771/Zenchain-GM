@@ -46,7 +46,7 @@ document.getElementById("connectBtn").addEventListener("click", async () => {
   provider = new ethers.providers.Web3Provider(window.ethereum);
 
   try {
-    await provider.send("eth_requestAccounts", []);
+    await window.ethereum.request({ method: "eth_requestAccounts" });
     signer = provider.getSigner();
     userAddress = await signer.getAddress();
     contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
