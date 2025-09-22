@@ -41,14 +41,14 @@ async function addZenChainNetworkIfNeeded() {
 
   try {
     const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
-    const chainIdNum = parseInt(chainIdHex, 16); // تبدیل hex به عدد
+    const chainIdNum = parseInt(chainIdHex, 16); // Convert hex to number
 
     if (chainIdNum === 8408) { // ZenChain Testnet
       console.log("Already on ZenChain Testnet");
-      return; // شبکه موجوده، نیازی به اضافه کردن نیست
+      return; // Network exists, no need to add
     }
 
-    // پیشنهاد اضافه کردن شبکه فقط اگر کاربر شبکه نداره
+    // Prompt to add network only if user doesn't have it
     await window.ethereum.request({
       method: 'wallet_addEthereumChain',
       params: [{
@@ -75,20 +75,19 @@ document.getElementById("connectButton").addEventListener("click", async () => {
   }
 
   try {
-    // فقط اگر شبکه رو نداره، پیشنهاد اضافه کردن بده
-    await addZenChainNetworkIfNeeded();
+    await addZenChainNetworkIfNeeded(); // Add network if needed
 
-    // اتصال به کیف پول
+    // Connect to wallet
     const accounts = await ethereum.request({ method: "eth_requestAccounts" });
     currentAccount = accounts[0];
     document.getElementById("connectButton").innerText = `Disconnect (${currentAccount.slice(0,6)}...)`;
 
-    // ست کردن provider، signer و قرارداد
+    // Set provider, signer, and contract
     provider = new ethers.providers.Web3Provider(window.ethereum);
     signer = provider.getSigner();
     contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-    // بروزرسانی داده‌ها
+    // Refresh data
     refreshData();
 
   } catch(err) {
@@ -107,7 +106,7 @@ document.getElementById("gmButton").addEventListener("click", async () => {
     const tx = await contract.sendGM();
     await tx.wait();
     alert("✅ GM sent successfully!");
-    startCooldown(86400); // 24h
+    startCooldown(86400); // 24 hours
     refreshData();
   } catch(err) {
     console.error("Error sending GM:", err);
@@ -134,7 +133,7 @@ async function refreshData() {
   } catch(err) {
     console.error("Error fetching GM data:", err);
   }
-});
+}
 
 // --------------------- COOLDOWN TIMER ---------------------
 function startCooldown(seconds) {
