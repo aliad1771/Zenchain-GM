@@ -2,37 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ZenChain GM DApp</title>
+  <title>GM dApp - ZenChain Testnet</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
 </head>
 <body>
-  <h1>ZenChain GM DApp</h1>
+  <h1>GM dApp on ZenChain Testnet</h1>
 
-  <!-- Wallet Section -->
-  <div>
-    <button id="connectBtn">Connect Wallet</button>
-    <p id="walletAddress">Not connected</p>
-  </div>
+  <!-- Connect Wallet -->
+  <button id="connectButton">Connect Wallet</button>
 
   <!-- Faucet -->
-  <div>
-    <button id="faucetBtn">Get Test ZTC</button>
-  </div>
+  <button id="faucetButton" onclick="window.open('https://faucet.zenchain.io/', '_blank')">
+    Get Test ZTC
+  </button>
 
-  <!-- GM Actions -->
-  <div>
-    <button id="gmBtn">Send GM</button>
-    <p id="cooldownTimer"></p>
-  </div>
+  <!-- Send GM -->
+  <button id="gmButton">Send GM</button>
+  <p id="timer"></p>
 
-  <!-- Stats -->
-  <div>
-    <h3>Total GMs: <span id="totalGMs">0</span></h3>
-    <h3>Recent GMs:</h3>
-    <ul id="recentGMs"></ul>
-  </div>
+  <!-- GM Stats -->
+  <h2>Total GMs: <span id="gmCount">0</span></h2>
+  <h3>Latest GMs</h3>
+  <ul id="gmList"></ul>
 
+  <!-- ✅ Load ethers.js (Browser build) -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+  <!-- Our App Logic -->
   <script src="script.js"></script>
 </body>
 </html>
