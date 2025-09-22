@@ -1,7 +1,6 @@
 // ⚡ Replace with your contract details
 const CONTRACT_ADDRESS = "0x08530f863e91edb25be68407053da6df867b2a68"; 
 const CONTRACT_ABI = [
-  // Example ABI - replace with your real ABI
   {
     "inputs": [],
     "name": "sendGM",
@@ -75,4 +74,69 @@ function setupProvider() {
 document.getElementById("gmButton").addEventListener("click", async () => {
   if (!contract || !currentAccount) {
     alert("Please connect wallet first!");
-    ret
+    return;
+  }
+
+  try {
+    const tx = await contract.sendGM();
+    await tx.wait();
+    alert("✅ GM sent successfully!");
+
+    // start cooldown (24h = 86400 seconds)
+    startCooldown(86400);
+    refreshData();
+  } catch (err) {
+    console.error("Error sending GM:", err);
+    alert("❌ Failed to send GM");
+  }
+});
+
+// --------------------- REFRESH DATA ---------------------
+async function refreshData() {
+  if (!contract) return;
+
+  try {
+    const total = await contract.getTotalGMs();
+    document.getElementById("gmCount").innerText = total.toString();
+
+    const gms = await contract.getLastGMs();
+    const list = document.getElementById("gmList");
+    list.innerHTML = "";
+
+    gms.slice(-5).reverse().forEach((gm) => {
+      const li = document.createElement("li");
+      const date = new Date(gm.timestamp * 1000).toLocaleString();
+      li.textContent = `${gm.sender} at ${date}`;
+      list.appendChild(li);
+    });
+  } catch (err) {
+    console.error("Error fetching GM data:", err);
+  }
+}
+
+// --------------------- COOLDOWN TIMER ---------------------
+function startCooldown(seconds) {
+  const button = document.getElementById("gmButton");
+  button.disabled = true;
+
+  let remaining = seconds;
+  updateTimer(remaining);
+
+  cooldownTimer = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(cooldownTimer);
+      button.disabled = false;
+      document.getElementById("timer").innerText = "";
+    } else {
+      updateTimer(remaining);
+    }
+  }, 1000);
+}
+
+function updateTimer(seconds) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  document.getElementById("timer").innerText = `⏳ Wait ${h}h ${m}m ${s}s before sending again`;
+}
