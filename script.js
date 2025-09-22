@@ -35,22 +35,25 @@ const CONTRACT_ABI = [
 
 let provider, signer, contract, currentAccount = null, cooldownTimer = null;
 
-// --------------------- ADD ZENCHAIN NETWORK ---------------------
-async function addZenChainNetwork() {
+// --------------------- ADD ZENCHAIN NETWORK IF NEEDED ---------------------
+async function addZenChainNetworkIfNeeded() {
   if (!window.ethereum) return;
 
   try {
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    if (chainId === '0x2098') { // 8408 in hex
+      console.log("Already on ZenChain Testnet");
+      return;
+    }
+
+    // پیشنهاد اضافه کردن شبکه فقط اگر کاربر شبکه نداره
     await window.ethereum.request({
       method: 'wallet_addEthereumChain',
       params: [{
-        chainId: '0x2098', // 8408 in hex
+        chainId: '0x2098',
         chainName: 'ZenChain Testnet',
         rpcUrls: ['https://zenchain-testnet.api.onfinality.io/public'],
-        nativeCurrency: {
-          name: 'ZenChain Token',
-          symbol: 'ZTC',
-          decimals: 18
-        },
+        nativeCurrency: { name: 'ZenChain Token', symbol: 'ZTC', decimals: 18 },
         blockExplorerUrls: ['https://zenchain-explorer.io']
       }]
     });
@@ -68,8 +71,8 @@ document.getElementById("connectButton").addEventListener("click", async () => {
     return;
   }
 
-  // پیشنهاد اضافه کردن شبکه ZenChain
-  await addZenChainNetwork();
+  // فقط اگر شبکه رو نداره، پیشنهاد اضافه کردن بده
+  await addZenChainNetworkIfNeeded();
 
   try {
     if (!currentAccount) {
