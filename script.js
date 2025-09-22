@@ -1,4 +1,3 @@
-// ⚡ Replace with your contract details
 const CONTRACT_ADDRESS = "0x08530f863e91edb25be68407053da6df867b2a68"; 
 const CONTRACT_ABI = [
   {
@@ -34,11 +33,7 @@ const CONTRACT_ABI = [
   }
 ];
 
-let provider;
-let signer;
-let contract;
-let currentAccount = null;
-let cooldownTimer = null;
+let provider, signer, contract, currentAccount = null, cooldownTimer = null;
 
 // --------------------- CONNECT WALLET ---------------------
 document.getElementById("connectButton").addEventListener("click", async () => {
@@ -51,13 +46,13 @@ document.getElementById("connectButton").addEventListener("click", async () => {
     if (!currentAccount) {
       const accounts = await ethereum.request({ method: "eth_requestAccounts" });
       currentAccount = accounts[0];
-      document.getElementById("connectButton").innerText = `Disconnect (${currentAccount.slice(0, 6)}...)`;
+      document.getElementById("connectButton").innerText = `Disconnect (${currentAccount.slice(0,6)}...)`;
       setupProvider();
     } else {
       currentAccount = null;
       document.getElementById("connectButton").innerText = "Connect Wallet";
     }
-  } catch (err) {
+  } catch(err) {
     console.error("Wallet connection error:", err);
   }
 });
@@ -76,16 +71,13 @@ document.getElementById("gmButton").addEventListener("click", async () => {
     alert("Please connect wallet first!");
     return;
   }
-
   try {
     const tx = await contract.sendGM();
     await tx.wait();
     alert("✅ GM sent successfully!");
-
-    // start cooldown (24h = 86400 seconds)
     startCooldown(86400);
     refreshData();
-  } catch (err) {
+  } catch(err) {
     console.error("Error sending GM:", err);
     alert("❌ Failed to send GM");
   }
@@ -94,7 +86,6 @@ document.getElementById("gmButton").addEventListener("click", async () => {
 // --------------------- REFRESH DATA ---------------------
 async function refreshData() {
   if (!contract) return;
-
   try {
     const total = await contract.getTotalGMs();
     document.getElementById("gmCount").innerText = total.toString();
@@ -102,14 +93,13 @@ async function refreshData() {
     const gms = await contract.getLastGMs();
     const list = document.getElementById("gmList");
     list.innerHTML = "";
-
-    gms.slice(-5).reverse().forEach((gm) => {
+    gms.slice(-5).reverse().forEach(gm => {
       const li = document.createElement("li");
       const date = new Date(gm.timestamp * 1000).toLocaleString();
       li.textContent = `${gm.sender} at ${date}`;
       list.appendChild(li);
     });
-  } catch (err) {
+  } catch(err) {
     console.error("Error fetching GM data:", err);
   }
 }
@@ -118,13 +108,12 @@ async function refreshData() {
 function startCooldown(seconds) {
   const button = document.getElementById("gmButton");
   button.disabled = true;
-
   let remaining = seconds;
   updateTimer(remaining);
 
   cooldownTimer = setInterval(() => {
     remaining--;
-    if (remaining <= 0) {
+    if(remaining <= 0){
       clearInterval(cooldownTimer);
       button.disabled = false;
       document.getElementById("timer").innerText = "";
@@ -134,9 +123,9 @@ function startCooldown(seconds) {
   }, 1000);
 }
 
-function updateTimer(seconds) {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
+function updateTimer(seconds){
+  const h = Math.floor(seconds/3600);
+  const m = Math.floor((seconds%3600)/60);
   const s = seconds % 60;
   document.getElementById("timer").innerText = `⏳ Wait ${h}h ${m}m ${s}s before sending again`;
 }
