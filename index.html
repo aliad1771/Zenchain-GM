@@ -8,21 +8,26 @@
 <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
 </head>
 <body>
-<div class="container">
-  <img src="logo.png" alt="ZenChain Logo" class="logo">
-  <h1>ZenChain GM DApp</h1>
-  <div class="buttons">
-    <button id="connectButton">Connect Wallet</button>
-    <button id="faucetButton" onclick="window.open('https://faucet.zenchain.io/', '_blank')">Get Test ZTC</button>
-    <button id="gmButton">Send GM</button>
-  </div>
-  <p id="timer"></p>
-  <div class="stats">
-    <h3>Total GMs: <span id="gmCount">0</span></h3>
-    <h3>Last GMs:</h3>
-    <ul id="gmList"></ul>
-  </div>
+<h1>ZenChain GM DApp</h1>
+
+<button id="connectButton">Connect Wallet</button>
+<button id="faucetButton" onclick="window.open('https://faucet.zenchain.io/', '_blank')">Get Test ZTC</button>
+<button id="gmButton">Send GM</button>
+
+<p id="timer"></p>
+
+<h2>Total GMs: <span id="gmCount">0</span></h2>
+<h2>Last GMs:</h2>
+<ul id="gmList"></ul>
+
+<!-- Social Links -->
+<div class="social-links">
+  <a href="https://x.com/zen_chain" target="_blank" class="social-card">Twitter</a>
+  <a href="https://www.zenchain.io/" target="_blank" class="social-card">Site</a>
+  <a href="https://discord.com/invite/zenchain" target="_blank" class="social-card">Discord</a>
+  <a href="https://t.me/ZenchainAnnouncements" target="_blank" class="social-card">Telegram</a>
 </div>
+
 <script src="script.js"></script>
 </body>
 </html>
