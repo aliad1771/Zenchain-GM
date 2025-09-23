@@ -1,7 +1,8 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #ffffff; /* موقت بدون لوگو */
-  color: #006400; 
+  background: url("logo.png") no-repeat center center fixed;
+  background-size: cover;
+  color: #228B22;
   text-align: center;
   min-height: 100vh;
   margin: 0;
@@ -9,17 +10,19 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-bottom: 120px; /* فاصله برای فوتر */
+  padding-bottom: 120px;
 }
 
 h1 {
   font-size: 3rem;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
+  color: #2e8b57;
 }
 
 h2 {
   font-size: 2rem;
-  margin: 25px 0 15px 0;
+  margin: -10px 0 5px 0;
+  color: #3cb371;
 }
 
 button {
@@ -29,27 +32,27 @@ button {
   font-size: 1.7rem;
   border-radius: 15px;
   border: none;
-  background-color: #90ee90; 
-  color: #006400;            
+  background-color: #90ee90;
+  color: #228B22;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
 }
 
 button:hover {
-  background-color: #76c776; 
+  background-color: #76c776;
 }
 
 #timer {
   font-size: 1.6rem;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 ul#gmList {
   padding: 0;
   list-style: none;
   font-size: 1.3rem;
-  background-color: rgba(144, 238, 144, 0.3); 
+  background-color: rgba(144, 238, 144, 0.3);
   border-radius: 10px;
   padding: 10px 20px;
 }
@@ -58,7 +61,6 @@ ul#gmList li {
   margin: 10px 0;
 }
 
-/* Social Links Fixed at Bottom */
 .social-links {
   position: fixed;
   bottom: 0;
@@ -68,19 +70,19 @@ ul#gmList li {
   justify-content: center;
   gap: 15px;
   padding: 15px 0;
-  background-color: #90ee90; /* solid light green */
+  background-color: #90ee90;
 }
 
 .social-card {
   text-decoration: none;
-  width: 140px;       
-  padding: 10px 12px; 
+  width: 140px;
+  padding: 10px 12px;
   text-align: center;
-  font-size: 1.1rem;  
+  font-size: 1.3rem;
   font-weight: bold;
-  border-radius: 12px; 
-  background-color: #90ee90; 
-  color: #006400;            
+  border-radius: 12px;
+  background-color: #90ee90;
+  color: #228B22;
   transition: 0.3s;
 }
 
