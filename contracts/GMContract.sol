@@ -1,42 +1,48 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
+/// @title GMContract - simple "GM" counter with per-address 24h cooldown
 contract GMContract {
-    uint256 public constant COOLDOWN = 1 days;
-
     struct GM {
         address sender;
         uint256 timestamp;
     }
 
-    GM[] public gms;
-    mapping(address => uint256) public lastGM;
+    GM[] private gms;
+    mapping(address => uint256) public lastSent;
+    uint256 public constant COOLDOWN = 24 hours;
 
     event NewGM(address indexed sender, uint256 timestamp);
 
+    /// @notice Send a GM. Enforces one GM per address per COOLDOWN period.
     function sendGM() external {
-        require(block.timestamp >= lastGM[msg.sender] + COOLDOWN, "Wait 24h!");
-        lastGM[msg.sender] = block.timestamp;
+        uint256 last = lastSent[msg.sender];
+        require(block.timestamp >= last + COOLDOWN, "Cooldown: wait before sending again");
+        lastSent[msg.sender] = block.timestamp;
         gms.push(GM(msg.sender, block.timestamp));
         emit NewGM(msg.sender, block.timestamp);
     }
 
+    /// @notice Total number of GMs recorded
     function getTotalGMs() external view returns (uint256) {
         return gms.length;
     }
 
+    /// @notice Retrieve up to `count` most recent GMs (most-recent-first)
     function getRecentGMs(uint256 count) external view returns (GM[] memory) {
-        uint256 length = gms.length;
-        if (count > length) count = length;
-        GM[] memory recent = new GM[](count);
+        uint256 total = gms.length;
+        if (count > total) count = total;
+        GM[] memory out = new GM[](count);
         for (uint256 i = 0; i < count; i++) {
-            recent[i] = gms[length - 1 - i];
+            out[i] = gms[total - 1 - i];
         }
-        return recent;
+        return out;
     }
 
+    /// @notice Remaining cooldown seconds for `user`. 0 if ready.
     function getRemainingCooldown(address user) external view returns (uint256) {
-        if (block.timestamp >= lastGM[user] + COOLDOWN) return 0;
-        return lastGM[user] + COOLDOWN - block.timestamp;
+        uint256 last = lastSent[user];
+        if (block.timestamp >= last + COOLDOWN) return 0;
+        return (last + COOLDOWN) - block.timestamp;
     }
 }
