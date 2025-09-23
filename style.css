@@ -1,66 +1,89 @@
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
-  color: #fff;
+  background-color: #ffffff; /* موقت بدون لوگو */
+  color: #006400; 
   text-align: center;
   min-height: 100vh;
   margin: 0;
-}
-
-.container {
-  background: rgba(0,0,0,0.7);
-  padding: 40px;
-  border-radius: 20px;
-  max-width: 700px;
-  margin: 50px auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.logo {
-  width: 120px;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 120px; /* فاصله برای فوتر */
 }
 
 h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
+  font-size: 3rem;
+  margin-bottom: 50px;
 }
 
-.buttons button {
-  padding: 12px 25px;
-  margin: 10px;
-  border-radius: 12px;
+h2 {
+  font-size: 2rem;
+  margin: 25px 0 15px 0;
+}
+
+button {
+  width: 270px;
+  padding: 25px;
+  margin: 20px 0;
+  font-size: 1.7rem;
+  border-radius: 15px;
   border: none;
-  background-color: #ff9800;
-  color: #fff;
+  background-color: #90ee90; 
+  color: #006400;            
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
 }
 
-.buttons button:hover {
-  background-color: #e68900;
+button:hover {
+  background-color: #76c776; 
 }
 
 #timer {
-  font-size: 16px;
-  margin: 10px 0;
-  color: #ffd700;
-}
-
-.stats h3 {
-  margin: 15px 0 5px 0;
+  font-size: 1.6rem;
+  margin: 20px 0;
 }
 
 ul#gmList {
   padding: 0;
   list-style: none;
+  font-size: 1.3rem;
+  background-color: rgba(144, 238, 144, 0.3); 
+  border-radius: 10px;
+  padding: 10px 20px;
 }
 
 ul#gmList li {
-  background: rgba(255,255,255,0.1);
-  margin: 5px 0;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 14px;
+  margin: 10px 0;
+}
+
+/* Social Links Fixed at Bottom */
+.social-links {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 15px 0;
+  background-color: #90ee90; /* solid light green */
+}
+
+.social-card {
+  text-decoration: none;
+  width: 140px;       
+  padding: 10px 12px; 
+  text-align: center;
+  font-size: 1.1rem;  
+  font-weight: bold;
+  border-radius: 12px; 
+  background-color: #90ee90; 
+  color: #006400;            
+  transition: 0.3s;
+}
+
+.social-card:hover {
+  background-color: #76c776;
 }
